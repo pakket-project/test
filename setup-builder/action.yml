@@ -1,0 +1,11 @@
+name: "Setup pakket-builder"
+description: ""
+outputs:
+  path:
+    description: "Path to binary"
+    value: ${{ steps.random-number-generator.outputs.random-id }}
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}/setup.sh
+      shell: bash
