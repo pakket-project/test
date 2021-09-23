@@ -6,4 +6,4 @@ jobs:
   test:
     runs-on: macos-11
     steps:
-      - uses: pakket-project/setup-builder@main
+      - uses: pakket-project/test/setup-builder@main
