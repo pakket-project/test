@@ -10,6 +10,8 @@ then
     arch="intel"
 fi
 
-wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -O /usr/local/bin/pakket-builder
+echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -O "$HOME/.local/bin/pakket-builder"
 
 pakket-builder -h
