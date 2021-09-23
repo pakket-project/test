@@ -1,5 +1,6 @@
 name: "Setup pakket-builder"
 description: ""
+
 outputs:
   path:
     description: "Path to binary"
