@@ -10,6 +10,6 @@ then
     arch="intel"
 fi
 
-echo "$PATH"
+wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -O /usr/local/bin/pakket-builder
 
-# # wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -O /usr/local/bin/pakket-builder
+pakket-builder -h
