@@ -17,4 +17,5 @@ wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -q -O "$HOME/.
 chmod +x "$HOME/.local/bin/pakket-builder"
 
 ls "$HOME/.local/bin"
+~/.local/bin/pakket-builder -h
 pakket-builder -h
