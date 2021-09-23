@@ -10,10 +10,11 @@ then
     arch="intel"
 fi
 
-mkdir "$HOME/.local/bin"
+mkdir -p "$HOME/.local/bin"
 echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder"
-install pakket-builder "$HOME/.local/bin/pakket-builder"
+wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -q -O "$HOME/.local/bin/pakket-builder"
+chmod +x "$HOME/.local/bin/pakket-builder"
 
+ls "$HOME/.local/bin"
 pakket-builder -h
