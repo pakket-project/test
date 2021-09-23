@@ -12,6 +12,7 @@ fi
 
 echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -O "$HOME/.local/bin/pakket-builder"
+wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder"
+install pakket-builder "$HOME/.local/bin"
 
 pakket-builder -h
