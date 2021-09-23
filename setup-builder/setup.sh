@@ -11,7 +11,7 @@ then
 fi
 
 mkdir -p "$HOME/.local/bin"
-echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+echo "::add-path::$HOME/.local/bin"
 
 wget "https://core.pakket.sh/pakket-builder/$arch/pakket-builder" -q -O "$HOME/.local/bin/pakket-builder"
 chmod +x "$HOME/.local/bin/pakket-builder"
