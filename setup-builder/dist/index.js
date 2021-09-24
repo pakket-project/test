@@ -37,6 +37,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
+const exec = __importStar(__nccwpck_require__(514));
+const path_1 = __nccwpck_require__(622);
 const version = '0.0.1';
 function get() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -69,7 +71,9 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const path = yield get();
-            core.info(path);
+            core.addPath(path_1.join(path, 'bin'));
+            const output = yield exec.getExecOutput('pakket-builder', ['-h']);
+            core.info(output.stdout);
             core.info('setup complete!');
         }
         catch (error) {

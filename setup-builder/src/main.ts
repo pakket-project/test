@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
+import * as exec from '@actions/exec'
+import {join} from 'path'
 
 const version = '0.0.1'
 
@@ -35,7 +37,11 @@ async function get(): Promise<string> {
 async function run(): Promise<void> {
   try {
     const path = await get()
-    core.info(path)
+
+    core.addPath(join(path, 'bin'))
+    const output = await exec.getExecOutput('pakket-builder', ['-h'])
+    core.info(output.stdout)
+
     core.info('setup complete!')
   } catch (error) {
     core.setFailed(error.message)
