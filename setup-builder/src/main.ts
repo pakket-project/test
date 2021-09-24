@@ -1,7 +1,14 @@
 import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
 
-async function download(): Promise<void> {
+async function get(): Promise<string> {
+  const toolPath = tc.find('pakket-builder', '0.0.1')
+  // found in cache
+  if (toolPath) {
+    core.info(`Found in cache @ ${toolPath}`)
+    return toolPath
+  }
+
   let arch = ''
   if (process.arch === 'x64') {
     arch = 'intel'
@@ -13,15 +20,20 @@ async function download(): Promise<void> {
 
   core.info(`Downloading ${arch} version of pakket-builder`)
 
-  tc.downloadTool(
+  const downloadPath = await tc.downloadTool(
     `https://core.pakket.sh/pakket-builder/${arch}/pakket-builder`
   )
+
+  const cachedDir = await tc.cacheDir(downloadPath, 'pakket-builder', '0.0.1')
+  core.info(`Successfully cached pakket-builder to ${cachedDir}`)
+
+  return cachedDir
 }
 
 async function run(): Promise<void> {
   try {
-    await download()
-
+    const path = await get()
+    core.info(path)
     core.info('setup complete!')
   } catch (error) {
     core.setFailed(error.message)

@@ -37,8 +37,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
-function download() {
+function get() {
     return __awaiter(this, void 0, void 0, function* () {
+        const toolPath = tc.find('pakket-builder', '0.0.1');
+        // found in cache
+        if (toolPath) {
+            core.info(`Found in cache @ ${toolPath}`);
+            return toolPath;
+        }
         let arch = '';
         if (process.arch === 'x64') {
             arch = 'intel';
@@ -50,13 +56,17 @@ function download() {
             core.setFailed('unsupported architecture');
         }
         core.info(`Downloading ${arch} version of pakket-builder`);
-        tc.downloadTool(`https://core.pakket.sh/pakket-builder/${arch}/pakket-builder`);
+        const downloadPath = yield tc.downloadTool(`https://core.pakket.sh/pakket-builder/${arch}/pakket-builder`);
+        const cachedDir = yield tc.cacheDir(downloadPath, 'pakket-builder', '0.0.1');
+        core.info(`Successfully cached pakket-builder to ${cachedDir}`);
+        return cachedDir;
     });
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield download();
+            const path = yield get();
+            core.info(path);
             core.info('setup complete!');
         }
         catch (error) {
