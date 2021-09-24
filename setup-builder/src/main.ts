@@ -21,7 +21,7 @@ async function get(): Promise<string> {
   core.info(`Downloading ${arch} version of pakket-builder`)
 
   const downloadPath = await tc.downloadTool(
-    `https://core.pakket.sh/pakket-builder/${arch}/pakket-builder`
+    `https://core.pakket.sh/pakket-builder/${arch}`
   )
 
   const cachedDir = await tc.cacheDir(downloadPath, 'pakket-builder', '0.0.1')
