@@ -72,7 +72,7 @@ function run() {
         try {
             const path = yield get();
             core.addPath(path_1.join(path, 'bin'));
-            const aa = yield exec.getExecOutput('ls', [path_1.join(path, 'bin')]);
+            const aa = yield exec.getExecOutput('ls', [path_1.join(path)]);
             console.log(aa.stdout);
             const output = yield exec.getExecOutput('pakket-builder', ['-h']);
             core.info(output.stdout);

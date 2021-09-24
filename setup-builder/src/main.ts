@@ -39,7 +39,7 @@ async function run(): Promise<void> {
     const path = await get()
 
     core.addPath(join(path, 'bin'))
-    const aa = await exec.getExecOutput('ls', [join(path, 'bin')])
+    const aa = await exec.getExecOutput('ls', [join(path)])
     console.log(aa.stdout)
     const output = await exec.getExecOutput('pakket-builder', ['-h'])
     core.info(output.stdout)
