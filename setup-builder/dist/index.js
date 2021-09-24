@@ -35,6 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
 const exec = __importStar(__nccwpck_require__(514));
@@ -71,9 +72,11 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const path = yield get();
-            core.addPath(path_1.join(path, 'bin'));
-            const aa = yield exec.getExecOutput('ls', [path_1.join(path)]);
-            console.log(aa.stdout);
+            core.addPath(path_1.join(path, 'pakket-builder', 'bin'));
+            const a = yield exec.getExecOutput('ls', [path_1.join(path)]);
+            const aa = yield exec.getExecOutput('ls', [path_1.join(path, 'pakket-builder')]);
+            core.info(`1: ${a.stdout}`);
+            core.info(`2: ${aa.stdout}`);
             const output = yield exec.getExecOutput('pakket-builder', ['-h']);
             core.info(output.stdout);
             core.info('setup complete!');
