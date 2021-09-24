@@ -37,9 +37,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
+const version = '0.0.1';
 function get() {
     return __awaiter(this, void 0, void 0, function* () {
-        const toolPath = tc.find('pakket-builder', '0.0.1');
+        const toolPath = tc.find('pakket-builder', version);
         // found in cache
         if (toolPath) {
             core.info(`Found in cache @ ${toolPath}`);
@@ -55,9 +56,11 @@ function get() {
         else {
             core.setFailed('unsupported architecture');
         }
-        core.info(`Downloading ${arch} version of pakket-builder`);
-        const downloadPath = yield tc.downloadTool(`https://core.pakket.sh/pakket-builder/${arch}/pakket-builder`);
-        const cachedDir = yield tc.cacheDir(downloadPath, 'pakket-builder', '0.0.1');
+        const url = `https://core.pakket.sh/pakket-builder/pakket-builder-${arch}-${version}.tar.xz`;
+        core.info(`Downloading ${arch} version of pakket-builder from ${url}`);
+        const downloadPath = yield tc.downloadTool(url);
+        const dest = yield tc.extractTar(downloadPath);
+        const cachedDir = yield tc.cacheDir(dest, 'pakket-builder', version);
         core.info(`Successfully cached pakket-builder to ${cachedDir}`);
         return cachedDir;
     });
