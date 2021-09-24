@@ -38,7 +38,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
-const exec = __importStar(__nccwpck_require__(514));
 const path_1 = __nccwpck_require__(622);
 const version = '0.0.1';
 function get() {
@@ -71,16 +70,10 @@ function get() {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            // get pakket-builder
             const path = yield get();
+            // add to path
             core.addPath(path_1.join(path, 'pakket-builder', 'bin'));
-            const a = yield exec.getExecOutput('ls', [path_1.join(path)]);
-            const aa = yield exec.getExecOutput('ls', [
-                path_1.join(path, 'pakket-builder', 'bin')
-            ]);
-            core.info(`1: ${a.stdout}`);
-            core.info(`2: ${aa.stdout}`);
-            const output = yield exec.getExecOutput('pakket-builder', ['-h']);
-            core.info(output.stdout);
             core.info('setup complete!');
         }
         catch (error) {

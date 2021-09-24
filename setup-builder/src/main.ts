@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
-import * as exec from '@actions/exec'
 import {join} from 'path'
 
 const version = '0.0.1'
@@ -37,18 +36,11 @@ async function get(): Promise<string> {
 
 async function run(): Promise<void> {
   try {
+    // get pakket-builder
     const path = await get()
 
+    // add to path
     core.addPath(join(path, 'pakket-builder', 'bin'))
-    const a = await exec.getExecOutput('ls', [join(path)])
-    const aa = await exec.getExecOutput('ls', [
-      join(path, 'pakket-builder', 'bin')
-    ])
-    core.info(`1: ${a.stdout}`)
-    core.info(`2: ${aa.stdout}`)
-
-    const output = await exec.getExecOutput('pakket-builder', ['-h'])
-    core.info(output.stdout)
 
     core.info('setup complete!')
   } catch (error: any) {
