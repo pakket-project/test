@@ -1,12 +1,11 @@
-name: "Setup pakket-builder"
-description: ""
-
-outputs:
-  path:
-    description: "Path to binary"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
+name: 'Your name here'
+description: 'Provide a description here'
+author: 'Your name or organization here'
+inputs:
+  milliseconds: # change this
+    required: true
+    description: 'input description here'
+    default: 'default value if applicable'
 runs:
-  using: "composite"
-  steps:
-    - run: ${{ github.action_path }}/setup.sh
-      shell: bash
+  using: 'node12'
+  main: 'dist/index.js'
