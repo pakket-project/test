@@ -1,8 +1,10 @@
 import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
 
+const version = '0.0.1'
+
 async function get(): Promise<string> {
-  const toolPath = tc.find('pakket-builder', '0.0.1')
+  const toolPath = tc.find('pakket-builder', version)
   // found in cache
   if (toolPath) {
     core.info(`Found in cache @ ${toolPath}`)
@@ -21,10 +23,11 @@ async function get(): Promise<string> {
   core.info(`Downloading ${arch} version of pakket-builder`)
 
   const downloadPath = await tc.downloadTool(
-    `https://core.pakket.sh/pakket-builder/${arch}`
+    `https://core.pakket.sh/pakket-builder/pakket-builder-${arch}-${version}`
   )
+  const dest = await tc.extractTar(downloadPath)
 
-  const cachedDir = await tc.cacheDir(downloadPath, 'pakket-builder', '0.0.1')
+  const cachedDir = await tc.cacheDir(dest, 'pakket-builder', version)
   core.info(`Successfully cached pakket-builder to ${cachedDir}`)
 
   return cachedDir
