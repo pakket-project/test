@@ -7,7 +7,7 @@ jobs:
     runs-on: macos-11
     steps:
       - name: "setup pakket-builder"
-      - uses: pakket-project/test/setup-builder@main
+        uses: pakket-project/test/setup-builder@main
 
       - name: "run pakket-builder"
-      - run: "pakket-builder -h"
+        run: "pakket-builder -h"
