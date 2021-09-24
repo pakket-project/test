@@ -20,11 +20,10 @@ async function get(): Promise<string> {
     core.setFailed('unsupported architecture')
   }
 
-  core.info(`Downloading ${arch} version of pakket-builder`)
+  const url = `https://core.pakket.sh/pakket-builder/pakket-builder-${arch}-${version}.tar.xz`
+  core.info(`Downloading ${arch} version of pakket-builder from ${url}`)
 
-  const downloadPath = await tc.downloadTool(
-    `https://core.pakket.sh/pakket-builder/pakket-builder-${arch}-${version}`
-  )
+  const downloadPath = await tc.downloadTool(url)
   const dest = await tc.extractTar(downloadPath)
 
   const cachedDir = await tc.cacheDir(dest, 'pakket-builder', version)
