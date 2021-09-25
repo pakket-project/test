@@ -3,9 +3,18 @@ name: "test workflow aaah"
 on: ["workflow_dispatch", "push"]
 
 jobs:
+  runs-on: ${{ matrix.os }}
+  strategy:
+    matrix:
+      include:
+        - os: silicon
+        - os: intel
+
   test:
     runs-on: macos-11
     steps:
+      - run: "echo running on${{matrix.os}}"
+
       - name: "setup pakket-builder"
         uses: pakket-project/test/setup-builder@main
 
