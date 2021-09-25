@@ -3,12 +3,12 @@ name: "test workflow aaah"
 on: ["workflow_dispatch", "push"]
 
 jobs:
-  runs-on: ${{ matrix.os }}
-  strategy:
-    matrix:
-      include:
-        - os: silicon
-        - os: intel
+  runs-on: ["intel", "silicon"]
+  # strategy:
+  #   matrix:
+  #     include:
+  #       - os: silicon
+  #       - os: intel
 
   test:
     runs-on: macos-11
