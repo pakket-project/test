@@ -8,8 +8,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: silicon
-          - os: intel
+          - os: ["self-hosted", "silicon"]
+          - os: ["self-hosted", "intel"]
 
     steps:
       - run: "echo running on ${{matrix.os}}"
