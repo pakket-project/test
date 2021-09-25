@@ -4,7 +4,7 @@ on: ["workflow_dispatch", "push"]
 
 jobs:
   test:
-    runs-on: ["self-hosted", "silicon"]
+    runs-on: ["self-hosted", "macos"]
     # strategy:
     #   matrix:
     #     include:
