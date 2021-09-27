@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: "setup pakket-builder"
-        uses: pakket-project/test/setup-builder@main
+        uses: pakket-project/actions/setup-builder@main
 
       - name: "run pakket-builder"
         run: "pakket-builder -h"
