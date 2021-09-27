@@ -4,21 +4,23 @@ on: ["workflow_dispatch", "push"]
 
 jobs:
   test:
-    # defaults:
-    #   run:
-    #     shell: ""
-
     runs-on: "${{matrix.os}}"
     strategy:
       matrix:
         include:
           - os: ["self-hosted", "silicon"]
+            shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
           - os: ["self-hosted", "intel"]
+            shell: "/usr/bin/bash"
+
+    defaults:
+      run:
+        shell: "${{matrix.shell}}"
 
     steps:
       - name: "set arm shell"
         if: "contains(matrix.os, 'silicon')"
-        run: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
+        run: "/usr/bin/arch -arch arm64e /bin/bash"
 
       - name: "arch"
         run: "arch"
