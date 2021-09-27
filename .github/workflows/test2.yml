@@ -4,15 +4,18 @@ on: ["workflow_dispatch", "push"]
 
 jobs:
   test:
-    runs-on: ["self-hosted"]
-    # strategy:
-    #   matrix:
-    #     include:
-    #       - os: ["self-hosted", "silicon"]
-    #       - os: ["self-hosted", "intel"]
+    runs-on: "${{matrix.os}}"
+    strategy:
+      matrix:
+        include:
+          - os: ["self-hosted", "silicon"]
+          - os: ["self-hosted", "intel"]
 
     steps:
-      # - run: "echo running on ${{matrix.os}}"
+      - run: "echo running on ${{matrix.os}}"
+
+      - name: "checkout repository"
+      - uses: actions/checkout@v2
 
       - name: "setup pakket-builder"
         uses: pakket-project/test/setup-builder@main
