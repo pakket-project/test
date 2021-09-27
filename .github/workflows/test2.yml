@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: "set arm shell"
-        if: 'contains(matrix.os, "silicon")'
+        if: "contains(matrix.os, 'silicon')"
         run: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
 
       - name: "arch"
