@@ -18,11 +18,7 @@ jobs:
         shell: "${{matrix.shell}}"
 
     steps:
-      - name: "set arm shell"
-        if: "contains(matrix.os, 'silicon')"
-        run: "/usr/bin/arch -arch arm64e /bin/bash"
-
-      - name: "arch"
+      - name: "check arch"
         run: "arch"
 
       - name: "checkout repository"
