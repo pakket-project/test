@@ -15,7 +15,7 @@ jobs:
       - run: "echo running on ${{matrix.os}}"
 
       - name: "checkout repository"
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: "setup pakket-builder"
         uses: pakket-project/test/setup-builder@main
