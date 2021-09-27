@@ -1,6 +1,16 @@
 name: "test workflow aaah"
 
-on: ["workflow_dispatch", "push"]
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number"
+        default: "0"
+        required: true
+      version:
+        description: "package version"
+        default: "0.0.0"
+        required: true
 
 jobs:
   test:
@@ -29,3 +39,6 @@ jobs:
 
       - name: "run pakket-builder"
         run: "pakket-builder -h"
+
+      - name: "ls"
+        run: ls
