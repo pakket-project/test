@@ -11,7 +11,7 @@ jobs:
           - os: ["self-hosted", "silicon"]
             shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
           - os: ["self-hosted", "intel"]
-            shell: "/usr/bin/bash"
+            shell: "bash"
 
     defaults:
       run:
