@@ -40,9 +40,6 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v1.1.3
 
-      - name: "run pakket-builder"
-        run: "pakket-builder -h"
-
       - name: List all modified files
         run: |
           for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
