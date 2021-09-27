@@ -11,6 +11,6 @@ cd prefix
 # Move to /bin folder
 mkdir "$PAKKET_PKG_PATH/bin"
 install "bin/pkg-config" "$PAKKET_PKG_PATH/bin"
-
+echo aaa
 # share
 mv "share" "$PAKKET_PKG_PATH"
