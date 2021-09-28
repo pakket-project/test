@@ -2,7 +2,7 @@
 
 cd neofetch-7.1.0 || exit
 
-echo "hi! aaa  :D fafaa :-) :D"
+echo "hi! aaa  :Ddewfheiowfhiw fafaa :-) :D"
 
 # Build package
 PREFIX="/$PAKKET_PKG_PATH" make install
