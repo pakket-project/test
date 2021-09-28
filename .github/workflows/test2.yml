@@ -63,7 +63,6 @@ jobs:
           done
 
       - name: Push checksums
-        uses: actions/checkout@v2
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
