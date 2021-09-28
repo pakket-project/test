@@ -42,9 +42,8 @@ jobs:
 
       - name: List all modified files
         run: |
-          echo "${{ steps.changed-files.outputs.all_modified_files }}"
           for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
-            if [[ $file =~ $regex ]]
+            if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
             then
                 echo "packages/${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
             else
