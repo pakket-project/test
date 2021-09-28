@@ -31,6 +31,7 @@ jobs:
       - name: "checkout repository"
         uses: actions/checkout@v2
         with:
+          path: "core"
           fetch-depth: 0
 
       - name: "setup pakket-builder"
@@ -45,7 +46,7 @@ jobs:
           for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
             if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
             then
-                pakket-builder build "packages/${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" -o "${BASH_REMATCH[2]}-${BASH_REMATCH[3]}"
+                pakket-builder build "$GITHUB_WORKSPACE/core/packages/${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" -o "${BASH_REMATCH[2]}-${BASH_REMATCH[3]}"
 
                 echo $(ls "${BASH_REMATCH[2]}-${BASH_REMATCH[3]}")
             else
