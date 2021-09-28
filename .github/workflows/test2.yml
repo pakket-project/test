@@ -55,8 +55,8 @@ jobs:
 
                 echo "$name $version"
                 pakket-builder build "$GITHUB_WORKSPACE/core/packages/$name" "$version" -o "$name-$version"
-                echo "::set-env name=name::$name"
-                echo "::set-env name=version::$version"
+                echo "NAME=$name" >> $GITHUB_ENV
+                echo "VERSION=$version" >> $GITHUB_ENV
             else
                 echo "$file doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
             fi
