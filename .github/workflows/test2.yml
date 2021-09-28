@@ -45,10 +45,9 @@ jobs:
           for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
             if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
             then
-                echo $(cat packages/neofetch/7.1.0/package)
-                pakket-builder build "packages/${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}"
+                pakket-builder build "packages/${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" -o "${BASH_REMATCH[2]}-${BASH_REMATCH[3]}"
 
-                echo $(ls /var/tmp/pakket/neofetch/package)
+                echo $(ls "${BASH_REMATCH[2]}-${BASH_REMATCH[3]}")
             else
                 echo "$file doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
             fi
