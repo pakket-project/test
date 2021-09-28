@@ -17,8 +17,10 @@ jobs:
         include:
           - os: ["self-hosted", "silicon"]
             shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
+            arch: "silicon"
           - os: ["self-hosted", "intel"]
             shell: "bash"
+            arch: "intel"
 
     defaults:
       run:
@@ -48,10 +50,23 @@ jobs:
           for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
             if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
             then
-                pakket-builder build "$GITHUB_WORKSPACE/core/packages/${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}" -o "${BASH_REMATCH[2]}-${BASH_REMATCH[3]}"
+                name="${BASH_REMATCH[2]}"
+                version="${BASH_REMATCH[3]}"
 
-                echo $(ls "${BASH_REMATCH[2]}-${BASH_REMATCH[3]}")
+                echo "$name $version"
+                pakket-builder build "$GITHUB_WORKSPACE/core/packages/$name" "$version" -o "$name-$version"
+                ::set-env name=name::$name
+                ::set-env name=version::$version
             else
                 echo "$file doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
             fi
           done
+
+      - name: Push checksums
+        uses: actions/checkout@v2
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "add checksum for $name (${{ matrix.arch }}, $version)"
+          git push
