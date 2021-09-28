@@ -45,7 +45,7 @@ jobs:
           for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
             if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
             then
-                pakket-builder build "packages/${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
+                pakket-builder build "packages/${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}"
 
                 echo $(ls /var/tmp/pakket/neofetch/package)
             else
