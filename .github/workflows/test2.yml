@@ -41,9 +41,12 @@ jobs:
         uses: tj-actions/changed-files@v1.1.3
 
       - name: List all modified files
-        run:
+        run: |
           echo "${{ steps.changed-files.outputs.all_modified_files }}"
-          # for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
-          #  file=$file | sed -e "s/^packages\///"
-          #  echo "$file"
-          # done
+            if [[ $file =~ $regex ]]
+            then
+                echo "packages/${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
+            else
+                echo "$file doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
+            fi
+          done
