@@ -40,12 +40,14 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v1.1.3
 
-      - name: List all modified files
+      - name: Run pakket-builder on all modified files
         run: |
           for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
             if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
             then
-                echo "packages/${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
+                pakket-builder build "packages/${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
+
+                echo $(ls /var/tmp/pakket/neofetch/package)
             else
                 echo "$file doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
             fi
