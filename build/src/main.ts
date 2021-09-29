@@ -6,9 +6,11 @@ import {join} from 'path'
 async function run(): Promise<void> {
   try {
     // /runner/core/packages
-    const packagesPath = core.getInput('packagesPath')
+    const packagesPath = core.getInput('packagesPath', {required: true})
     // /runner/core/packages/neofetch/0.17.0/package
-    const modifiedPaths = core.getInput('modifiedPaths').split(' ')
+    const modifiedPaths = core
+      .getInput('modifiedPaths', {required: true})
+      .split(' ')
 
     for (const p of modifiedPaths) {
       const pathRegex = new RegExp(
