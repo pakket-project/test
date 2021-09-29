@@ -5,17 +5,26 @@ import {join} from 'path'
 
 async function run(): Promise<void> {
   try {
-    const paths = core.getInput('paths').split(' ')
+    // /runner/core/packages
+    const packagesPath = core.getInput('repoPath')
+    // /runner/core/packages/neofetch/0.17.0/package
+    const modifiedPaths = core.getInput('packagePaths').split(' ')
 
-    for (const p of paths) {
+    for (const p of modifiedPaths) {
       const pathRegex = new RegExp(
         /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
       ).exec(p)
 
       if (pathRegex) {
+        const pkg = pathRegex[2]
+        const version = pathRegex[3]
         core.info(
-          `pkg: ${pathRegex[2]} version: ${pathRegex[3]}\n(total: ${pathRegex}\n\n\n)`
+          `pakket-builder build ${join(
+            packagesPath,
+            pkg
+          )} ${version} -o ${pkg}-${version}`
         )
+        // $GITHUB_WORKSPACE/core/packages/$name
       }
       core.info('')
     }

@@ -37,14 +37,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const core = __importStar(__nccwpck_require__(186));
+const path_1 = __nccwpck_require__(622);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const paths = core.getInput('paths').split(' ');
-            for (const p of paths) {
+            // /runner/core/packages
+            const packagesPath = core.getInput('repoPath');
+            // /runner/core/packages/neofetch/0.17.0/package
+            const modifiedPaths = core.getInput('packagePaths').split(' ');
+            for (const p of modifiedPaths) {
                 const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(p);
                 if (pathRegex) {
-                    core.info(`pkg: ${pathRegex[2]} version: ${pathRegex[3]}\n(total: ${pathRegex}\n\n\n)`);
+                    const pkg = pathRegex[2];
+                    const version = pathRegex[3];
+                    core.info(`pakket-builder build ${path_1.join(packagesPath, pkg)} ${version} -o ${pkg}-${version}`);
+                    // $GITHUB_WORKSPACE/core/packages/$name
                 }
                 core.info('');
             }
