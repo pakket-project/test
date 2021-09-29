@@ -2,7 +2,7 @@
 
 cd bat-0.18.0 || exit
 
-echo "hi :Dfsdffdsfdsfsdaasfdsfdssdffdsfdsfdsfs"
+echo "hi :Dfsdffdsfdsfsdaasfdsfdssfdsfdsfdssdffdsfdsfdsfs"
 
 # Build binary
 cargo build --manifest-path "Cargo.toml" --release
