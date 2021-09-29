@@ -48,7 +48,7 @@ jobs:
       - name: "run pakket-builder"
         uses: pakket-project/test/build@main
         with:
-          packagesPath: "$GITHUB_WORKSPACE/core/packages"
+          packagesPath: "${{ GITHUB_WORKSPACE }}/core/packages"
           modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
     # // /runner/core/packages
     # const packagesPath = core.getInput('repoPath')
