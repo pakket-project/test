@@ -29,8 +29,15 @@ async function run(): Promise<void> {
           '-o',
           join(GH_WORKSPACE, 'packages', pkg, '-', version)
         ])
-        // @ts-ignore
-        core.info(output.stdout.split('\n'))
+
+        const stdout = output.stdout.split('\n')
+        for (const line of stdout) {
+          const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
+          if (regex) {
+            const checksum = regex[2]
+            core.info(checksum)
+          }
+        }
       }
     }
   } catch (error: any) {
