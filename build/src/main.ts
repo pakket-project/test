@@ -34,7 +34,7 @@ async function run(): Promise<void> {
         for (const line of stdout) {
           const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
           if (regex) {
-            const checksum = regex[2]
+            const checksum = regex[1]
             core.info(checksum)
           }
         }
