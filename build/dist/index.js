@@ -61,7 +61,8 @@ function run() {
                         '-o',
                         path_1.join(GH_WORKSPACE, 'packages', pkg, '-', version)
                     ]);
-                    core.info(output.stdout);
+                    // @ts-ignore
+                    core.info(output.stdout.split('\n'));
                 }
             }
         }

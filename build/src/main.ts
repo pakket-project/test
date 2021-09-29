@@ -21,6 +21,7 @@ async function run(): Promise<void> {
       if (pathRegex) {
         const pkg = pathRegex[2]
         const version = pathRegex[3]
+
         const output = await exec.getExecOutput('pakket-builder', [
           'build',
           join(GH_WORKSPACE, packagesPath, pkg),
@@ -28,7 +29,8 @@ async function run(): Promise<void> {
           '-o',
           join(GH_WORKSPACE, 'packages', pkg, '-', version)
         ])
-        core.info(output.stdout)
+        // @ts-ignore
+        core.info(output.stdout.split('\n'))
       }
     }
   } catch (error: any) {
