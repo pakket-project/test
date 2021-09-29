@@ -46,7 +46,7 @@ jobs:
           path: "core"
 
       - name: "run pakket-builder"
-        run: pakket-project/test/build@main
+        uses: pakket-project/test/build@main
 
       # - name: Run pakket-builder on all modified files
       #   run: |
