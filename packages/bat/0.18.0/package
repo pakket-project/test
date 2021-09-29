@@ -2,7 +2,7 @@
 
 cd bat-0.18.0 || exit
 
-echo hi
+echo "hi :D"
 
 # Build binary
 cargo build --manifest-path "Cargo.toml" --release
