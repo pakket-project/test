@@ -40,13 +40,19 @@ const core = __importStar(__nccwpck_require__(186));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const path = core.getInput('path', { required: true });
-            const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(path);
-            if (pathRegex) {
-                for (let i = 0; i < pathRegex.length; i++) {
-                    core.info(`${i}: ${pathRegex[i]}`);
-                }
-            }
+            core.info(`input: ${core.getMultilineInput('path')}`);
+            // for (const p of path) {
+            //   core.info(p)
+            //   const pathRegex = new RegExp(
+            //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
+            //   ).exec(p)
+            //   if (pathRegex) {
+            //     for (let i = 0; i < pathRegex.length; i++) {
+            //       core.info(`${i}: ${pathRegex[i]}`)
+            //     }
+            //   }
+            //   core.info('')
+            // }
             // exec.getExecOutput("pakket-builder", ["build", "path", "version", "-o pkg+ver"])
         }
         catch (error) {
