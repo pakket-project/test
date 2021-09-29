@@ -5,16 +5,20 @@ import {join} from 'path'
 
 async function run(): Promise<void> {
   try {
-    const path = core.getInput('path', {required: true})
+    const path = core.getInput('path', {required: true}).split(' ')
 
-    const pathRegex = new RegExp(
-      /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
-    ).exec(path)
+    for (const p of path) {
+      core.info(p)
+      const pathRegex = new RegExp(
+        /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
+      ).exec(p)
 
-    if (pathRegex) {
-      for (let i = 0; i < pathRegex.length; i++) {
-        core.info(`${i}: ${pathRegex[i]}`)
+      if (pathRegex) {
+        for (let i = 0; i < pathRegex.length; i++) {
+          core.info(`${i}: ${pathRegex[i]}`)
+        }
       }
+      core.info('')
     }
 
     // exec.getExecOutput("pakket-builder", ["build", "path", "version", "-o pkg+ver"])
