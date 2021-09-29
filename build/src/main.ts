@@ -21,19 +21,15 @@ async function run(): Promise<void> {
       if (pathRegex) {
         const pkg = pathRegex[2]
         const version = pathRegex[3]
-        core.info(
-          `pakket-builder build ${join(
-            GH_WORKSPACE,
-            packagesPath,
-            pkg
-          )} ${version} -o ${pkg}-${version}`
-        )
-        // $GITHUB_WORKSPACE/core/packages/$name
+        const output = await exec.getExecOutput('pakket-builder', [
+          'build',
+          join(GH_WORKSPACE, packagesPath, pkg),
+          version,
+          `-o ${pkg}-${version}`
+        ])
+        core.info(output.stdout)
       }
-      core.info('')
     }
-
-    // exec.getExecOutput("pakket-builder", ["build", "path", "version", "-o pkg+ver"])
   } catch (error: any) {
     core.setFailed(error.message)
   }
