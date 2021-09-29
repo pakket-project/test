@@ -42,9 +42,9 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // /runner/core/packages
-            const packagesPath = core.getInput('repoPath');
+            const packagesPath = core.getInput('packagesPath');
             // /runner/core/packages/neofetch/0.17.0/package
-            const modifiedPaths = core.getInput('packagePaths').split(' ');
+            const modifiedPaths = core.getInput('modifiedPaths').split(' ');
             for (const p of modifiedPaths) {
                 const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(p);
                 if (pathRegex) {
