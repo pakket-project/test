@@ -42,16 +42,11 @@ function run() {
         try {
             const paths = core.getInput('paths').split(' ');
             for (const p of paths) {
-                core.info(p);
-                // const pathRegex = new RegExp(
-                //   /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
-                // ).exec(p)
-                // if (pathRegex) {
-                //   for (let i = 0; i < pathRegex.length; i++) {
-                //     core.info(`${i}: ${pathRegex[i]}`)
-                //   }
-                // }
-                // core.info('')
+                const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(p);
+                if (pathRegex) {
+                    core.info(`pkg: ${pathRegex[1]} version: ${pathRegex[2]}`);
+                }
+                core.info('');
             }
             // exec.getExecOutput("pakket-builder", ["build", "path", "version", "-o pkg+ver"])
         }
