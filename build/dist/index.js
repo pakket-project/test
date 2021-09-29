@@ -41,20 +41,18 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const paths = core.getInput('paths').split(' ');
-            core.info(paths.join('-'));
-            core.info(paths[0]);
-            // for (const p of path) {
-            //   core.info(p)
-            //   const pathRegex = new RegExp(
-            //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
-            //   ).exec(p)
-            //   if (pathRegex) {
-            //     for (let i = 0; i < pathRegex.length; i++) {
-            //       core.info(`${i}: ${pathRegex[i]}`)
-            //     }
-            //   }
-            //   core.info('')
-            // }
+            for (const p of paths) {
+                core.info(p);
+                // const pathRegex = new RegExp(
+                //   /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
+                // ).exec(p)
+                // if (pathRegex) {
+                //   for (let i = 0; i < pathRegex.length; i++) {
+                //     core.info(`${i}: ${pathRegex[i]}`)
+                //   }
+                // }
+                // core.info('')
+            }
             // exec.getExecOutput("pakket-builder", ["build", "path", "version", "-o pkg+ver"])
         }
         catch (error) {
