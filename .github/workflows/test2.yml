@@ -58,7 +58,7 @@ jobs:
                 echo "NAME=$name" >> $GITHUB_ENV
                 echo "VERSION=$version" >> $GITHUB_ENV
             else
-                echo "$file doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
+                echo "$file doesn't match" >&2
             fi
           done
 
@@ -68,5 +68,7 @@ jobs:
           git config user.email github-actions@github.com
           cd "$GITHUB_WORKSPACE/core"
           git add packages/**
-          git commit -m "add checksum for $name (${{ matrix.arch }}, $version)"
+          git pull
+          git commit -m "add checksum for $NAME (${{ matrix.arch }}, $VERSION)"
+          git pull
           git push
