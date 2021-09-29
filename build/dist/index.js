@@ -44,7 +44,7 @@ function run() {
             for (const p of paths) {
                 const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(p);
                 if (pathRegex) {
-                    core.info(`pkg: ${pathRegex[1]} version: ${pathRegex[2]}`);
+                    core.info(`pkg: ${pathRegex[2]} version: ${pathRegex[3]}\n(total: ${pathRegex}\n\n\n)`);
                 }
                 core.info('');
             }

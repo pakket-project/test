@@ -13,7 +13,9 @@ async function run(): Promise<void> {
       ).exec(p)
 
       if (pathRegex) {
-        core.info(`pkg: ${pathRegex[1]} version: ${pathRegex[2]}`)
+        core.info(
+          `pkg: ${pathRegex[2]} version: ${pathRegex[3]}\n(total: ${pathRegex}\n\n\n)`
+        )
       }
       core.info('')
     }
