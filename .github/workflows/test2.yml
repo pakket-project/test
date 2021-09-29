@@ -48,31 +48,35 @@ jobs:
       - name: "run pakket-builder"
         uses: pakket-project/test/build@main
         with:
-          paths: "${{ steps.changed-files.outputs.all_modified_files }}"
+          packagesPath: "$GITHUB_WORKSPACE/core/packages"
+          modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
+    # // /runner/core/packages
+    # const packagesPath = core.getInput('repoPath')
+    # // /runner/core/packages/neofetch/0.17.0/package
+    # const modifiedPaths = core.getInput('packagePaths').split(' ')
+    # - name: Run pakket-builder on all modified files
+    #   run: |
+    #     for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
+    #       if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
+    #       then
+    #           name="${BASH_REMATCH[2]}"
+    #           version="${BASH_REMATCH[3]}"
 
-      # - name: Run pakket-builder on all modified files
-      #   run: |
-      #     for file in "${{ steps.changed-files.outputs.all_modified_files }}"; do
-      #       if [[ $file =~ (packages\/)([^\/]*)\/([^\/]*)\/([^\n]*) ]]
-      #       then
-      #           name="${BASH_REMATCH[2]}"
-      #           version="${BASH_REMATCH[3]}"
+    #           echo "$name $version"
+    #           pakket-builder build "$GITHUB_WORKSPACE/core/packages/$name" "$version" -o "$name-$version"
+    #           echo "NAME=$name" >> $GITHUB_ENV
+    #           echo "VERSION=$version" >> $GITHUB_ENV
+    #       else
+    #           echo "$file doesn't match" >&2
+    #       fi
+    #     done
 
-      #           echo "$name $version"
-      #           pakket-builder build "$GITHUB_WORKSPACE/core/packages/$name" "$version" -o "$name-$version"
-      #           echo "NAME=$name" >> $GITHUB_ENV
-      #           echo "VERSION=$version" >> $GITHUB_ENV
-      #       else
-      #           echo "$file doesn't match" >&2
-      #       fi
-      #     done
-
-      # - name: Push checksums
-      #   run: |
-      #     git config user.name github-actions
-      #     git config user.email github-actions@github.com
-      #     cd "$GITHUB_WORKSPACE/core"
-      #     git add packages/**
-      #     git commit -m "add checksum for $NAME (${{ matrix.arch }}, $VERSION)"
-      #     git pull
-      #     git push
+    # - name: Push checksums
+    #   run: |
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     cd "$GITHUB_WORKSPACE/core"
+    #     git add packages/**
+    #     git commit -m "add checksum for $NAME (${{ matrix.arch }}, $VERSION)"
+    #     git pull
+    #     git push
