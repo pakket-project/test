@@ -47,6 +47,8 @@ jobs:
 
       - name: "run pakket-builder"
         uses: pakket-project/test/build@main
+        with:
+          path: "${{ steps.changed-files.outputs.all_modified_files }}"
 
       # - name: Run pakket-builder on all modified files
       #   run: |
