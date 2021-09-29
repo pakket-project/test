@@ -58,7 +58,8 @@ function run() {
                         'build',
                         path_1.join(GH_WORKSPACE, packagesPath, pkg),
                         version,
-                        `-o ${pkg}-${version}`
+                        '-o',
+                        path_1.join(GH_WORKSPACE, 'packages', pkg, '-', version)
                     ]);
                     core.info(output.stdout);
                 }

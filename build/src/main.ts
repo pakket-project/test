@@ -25,7 +25,8 @@ async function run(): Promise<void> {
           'build',
           join(GH_WORKSPACE, packagesPath, pkg),
           version,
-          `-o ${pkg}-${version}`
+          '-o',
+          join(GH_WORKSPACE, 'packages', pkg, '-', version)
         ])
         core.info(output.stdout)
       }
