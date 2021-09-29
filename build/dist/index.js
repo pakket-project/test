@@ -47,12 +47,13 @@ function run() {
             const modifiedPaths = core
                 .getInput('modifiedPaths', { required: true })
                 .split(' ');
+            const GH_WORKSPACE = process.env.GITHUB_WORKSPACE;
             for (const p of modifiedPaths) {
                 const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(p);
                 if (pathRegex) {
                     const pkg = pathRegex[2];
                     const version = pathRegex[3];
-                    core.info(`pakket-builder build ${path_1.join(packagesPath, pkg)} ${version} -o ${pkg}-${version}`);
+                    core.info(`pakket-builder build ${path_1.join(GH_WORKSPACE, packagesPath, pkg)} ${version} -o ${pkg}-${version}`);
                     // $GITHUB_WORKSPACE/core/packages/$name
                 }
                 core.info('');

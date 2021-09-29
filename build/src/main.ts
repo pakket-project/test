@@ -11,6 +11,7 @@ async function run(): Promise<void> {
     const modifiedPaths = core
       .getInput('modifiedPaths', {required: true})
       .split(' ')
+    const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
 
     for (const p of modifiedPaths) {
       const pathRegex = new RegExp(
@@ -22,6 +23,7 @@ async function run(): Promise<void> {
         const version = pathRegex[3]
         core.info(
           `pakket-builder build ${join(
+            GH_WORKSPACE,
             packagesPath,
             pkg
           )} ${version} -o ${pkg}-${version}`
