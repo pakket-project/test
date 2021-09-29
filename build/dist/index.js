@@ -40,7 +40,9 @@ const core = __importStar(__nccwpck_require__(186));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            core.info(`input: ${core.getMultilineInput('path')[0]}`);
+            const paths = core.getInput('paths').split(' ');
+            core.info(paths.join('-'));
+            core.info(paths[0]);
             // for (const p of path) {
             //   core.info(p)
             //   const pathRegex = new RegExp(

@@ -5,7 +5,9 @@ import {join} from 'path'
 
 async function run(): Promise<void> {
   try {
-    core.info(`input: ${core.getMultilineInput('path')[0]}`)
+    const paths = core.getInput('paths').split(' ')
+    core.info(paths.join('-'))
+    core.info(paths[0])
     // for (const p of path) {
     //   core.info(p)
     //   const pathRegex = new RegExp(
