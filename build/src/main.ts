@@ -26,9 +26,6 @@ async function run(): Promise<void> {
 
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 
-    // You can also pass in additional options as a second parameter to getOctokit
-    // const octokit = github.getOctokit(myToken, {userAgent: "MyActionVersion1"});
-
     const {data: pullRequest} = await octokit.rest.pulls.get({
       owner: 'pakket-project',
       repo: 'test',
@@ -38,7 +35,7 @@ async function run(): Promise<void> {
       }
     })
 
-    core.info(JSON.stringify(pullRequest, null, 2))
+    core.info(JSON.stringify(pullRequest, null, ' '))
 
     // for (const p of modifiedPaths) {
     //   const pathRegex = new RegExp(
