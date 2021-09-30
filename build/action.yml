@@ -2,9 +2,6 @@ name: 'Build package'
 description: 'Build a package with pakket-builder'
 author: 'pakket-project'
 inputs:
-  repoPath:
-    description: 'Path to repository'
-    required: true
   PR:
     description: 'PR number'
     required: true
