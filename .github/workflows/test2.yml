@@ -48,7 +48,7 @@ jobs:
         uses: pakket-project/test/build@main
         with:
           packagesPath: "core/packages"
-          PR: "${{inputs.PR}}"
+          PR: "${{ github.event.inputs.PR }}"
           # modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
     # // /runner/core/packages
     # const packagesPath = core.getInput('repoPath')
