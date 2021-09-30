@@ -41,7 +41,7 @@ async function run(): Promise<void> {
     await exec.exec('git', ['checkout', branch])
 
     await exec.getExecOutput('cat', [
-      join(GH_WORKSPACE, 'packages', 'packages', 'neofetch', '7.1.0', 'package')
+      join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
     ])
 
     // for (const p of modifiedPaths) {

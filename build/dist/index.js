@@ -72,7 +72,7 @@ function run() {
             ]);
             yield exec.exec('git', ['checkout', branch]);
             yield exec.getExecOutput('cat', [
-                path_1.join(GH_WORKSPACE, 'packages', 'packages', 'neofetch', '7.1.0', 'package')
+                path_1.join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
             ]);
             // for (const p of modifiedPaths) {
             //   const pathRegex = new RegExp(
