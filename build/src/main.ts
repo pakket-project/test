@@ -28,22 +28,29 @@ async function run(): Promise<void> {
       pull_number: (PR as unknown) as number
     })
 
-    const remote = 'origin'
     const branch = pull.data.head.ref
 
-    await exec.exec('git', ['fetch', remote, `${branch}:${branch}`])
-    await exec.exec('git', ['config', `branch.${branch}.remote`, remote])
+    await exec.exec('git', ['fetch', 'origin', `${branch}:${branch}`])
+    await exec.exec('git', ['config', `branch.${branch}.remote`, 'origin'])
     await exec.exec('git', [
       'config',
       `branch.${branch}.merge`,
       `refs/heads/${branch}`
     ])
     await exec.exec('git', ['checkout', branch])
+    core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`)
 
-    await exec.getExecOutput('cat', [
-      join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
-    ])
+    // await exec.getExecOutput('cat', [
+    //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
+    // ])
 
+    const diff = await octokit.rest.pulls.get({
+      owner: 'pakket-project',
+      repo: 'test',
+      pull_number: (PR as unknown) as number,
+      mediaType: {format: 'diff'}
+    })
+    core.info(diff.url)
     // for (const p of modifiedPaths) {
     //   const pathRegex = new RegExp(
     //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g

@@ -39,7 +39,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const github = __importStar(__nccwpck_require__(5438));
-const path_1 = __nccwpck_require__(5622);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -61,19 +60,26 @@ function run() {
                 repo: 'test',
                 pull_number: PR
             });
-            const remote = 'origin';
             const branch = pull.data.head.ref;
-            yield exec.exec('git', ['fetch', remote, `${branch}:${branch}`]);
-            yield exec.exec('git', ['config', `branch.${branch}.remote`, remote]);
+            yield exec.exec('git', ['fetch', 'origin', `${branch}:${branch}`]);
+            yield exec.exec('git', ['config', `branch.${branch}.remote`, 'origin']);
             yield exec.exec('git', [
                 'config',
                 `branch.${branch}.merge`,
                 `refs/heads/${branch}`
             ]);
             yield exec.exec('git', ['checkout', branch]);
-            yield exec.getExecOutput('cat', [
-                path_1.join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
-            ]);
+            core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`);
+            // await exec.getExecOutput('cat', [
+            //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
+            // ])
+            const diff = yield octokit.rest.pulls.get({
+                owner: 'pakket-project',
+                repo: 'test',
+                pull_number: PR,
+                mediaType: { format: 'diff' }
+            });
+            core.info(diff.url);
             // for (const p of modifiedPaths) {
             //   const pathRegex = new RegExp(
             //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
