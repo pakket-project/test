@@ -1,13 +1,12 @@
 name: "test workflow aaah"
 
 on:
-  pull_request:
-    types: [opened]
-    paths:
-      - "packages/**"
-  push:
-    paths:
-      - "packages/**"
+  workflow_dispatch:
+    inputs:
+      PR:
+        description: "PR number"
+        required: true
+        default: "0"
 
 jobs:
   test:
@@ -39,17 +38,18 @@ jobs:
       - name: "setup pakket-builder"
         uses: pakket-project/actions/setup-builder@main
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v1.1.3
-        with:
-          path: "core"
+      # - name: Get changed files
+      #   id: changed-files
+      #   uses: tj-actions/changed-files@v1.1.3
+      #   with:
+      #     path: "core"
 
       - name: "run pakket-builder"
         uses: pakket-project/test/build@main
         with:
           packagesPath: "core/packages"
-          modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
+          PR: "${{inputs.PR}}"
+          # modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
     # // /runner/core/packages
     # const packagesPath = core.getInput('repoPath')
     # // /runner/core/packages/neofetch/0.17.0/package

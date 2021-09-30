@@ -1,6 +1,19 @@
-name: 'Setup pakket-builder'
-description: 'Install pakket-builder'
+name: 'Build package'
+description: 'Build a package with pakket-builder'
 author: 'pakket-project'
+inputs:
+  packagesPath:
+    description: 'Path to packages'
+    required: true
+  PR:
+    description: 'PR number'
+    required: true
+outputs:
+  intelChecksums: # id of the output
+    description: 'Intel checksums'
+  siliconChecksums: # id of the output
+    description: 'Silicon checksums'
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
