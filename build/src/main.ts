@@ -44,13 +44,18 @@ async function run(): Promise<void> {
     //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
     // ])
 
-    const diff = await octokit.rest.pulls.get({
-      owner: 'pakket-project',
-      repo: 'test',
-      pull_number: (PR as unknown) as number,
-      mediaType: {format: 'diff'}
-    })
-    core.info(diff.url)
+    const files = await exec.getExecOutput('gh', [
+      'pr',
+      'view',
+      PR,
+      '--json',
+      'files',
+      '--jq',
+      '.files.[].path'
+    ])
+
+    core.info(files.stdout)
+
     // for (const p of modifiedPaths) {
     //   const pathRegex = new RegExp(
     //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g

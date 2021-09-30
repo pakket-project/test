@@ -73,13 +73,16 @@ function run() {
             // await exec.getExecOutput('cat', [
             //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
             // ])
-            const diff = yield octokit.rest.pulls.get({
-                owner: 'pakket-project',
-                repo: 'test',
-                pull_number: PR,
-                mediaType: { format: 'diff' }
-            });
-            core.info(diff.url);
+            const files = yield exec.getExecOutput('gh', [
+                'pr',
+                'view',
+                PR,
+                '--json',
+                'files',
+                '--jq',
+                '.files.[].path'
+            ]);
+            core.info(files.stdout);
             // for (const p of modifiedPaths) {
             //   const pathRegex = new RegExp(
             //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
