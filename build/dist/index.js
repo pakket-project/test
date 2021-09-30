@@ -69,6 +69,7 @@ function run() {
                     format: 'diff'
                 }
             });
+            core.info(JSON.stringify(pullRequest, null, 2));
             // for (const p of modifiedPaths) {
             //   const pathRegex = new RegExp(
             //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
