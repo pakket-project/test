@@ -43,8 +43,6 @@ const path_1 = __nccwpck_require__(5622);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // /runner/core/packages
-            const repoPath = core.getInput('repoPath', { required: true });
             const PR = core.getInput('PR', { required: true });
             const GH_WORKSPACE = process.env.GITHUB_WORKSPACE;
             let arch = '';
@@ -65,7 +63,6 @@ function run() {
             });
             const remote = 'origin';
             const branch = pull.data.head.ref;
-            yield exec.exec('cd', [path_1.join(GH_WORKSPACE, repoPath)]);
             yield exec.exec('git', ['fetch', remote, `${branch}:${branch}`]);
             yield exec.exec('git', ['config', `branch.${branch}.remote`, remote]);
             yield exec.exec('git', [
@@ -75,7 +72,7 @@ function run() {
             ]);
             yield exec.exec('git', ['checkout', branch]);
             yield exec.getExecOutput('cat', [
-                path_1.join(GH_WORKSPACE, repoPath, 'packages', 'neofetch', '7.1.0', 'package')
+                path_1.join(GH_WORKSPACE, 'packages', 'packages', 'neofetch', '7.1.0', 'package')
             ]);
             // for (const p of modifiedPaths) {
             //   const pathRegex = new RegExp(
