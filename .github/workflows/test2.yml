@@ -48,6 +48,7 @@ jobs:
         with:
           PR: "${{ github.event.inputs.PR }}"
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          repoPath: ""
 
           # modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
     # // /runner/core/packages
