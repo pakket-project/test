@@ -31,8 +31,8 @@ jobs:
 
       - name: "checkout repository"
         uses: actions/checkout@v2
-        with:
-          # fetch-depth: 2
+        # with:
+        # fetch-depth: 2
 
       - name: "setup pakket-builder"
         uses: pakket-project/actions/setup-builder@main
