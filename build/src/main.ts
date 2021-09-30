@@ -6,8 +6,6 @@ import {join} from 'path'
 
 async function run(): Promise<void> {
   try {
-    // /runner/core/packages
-    const repoPath = core.getInput('repoPath', {required: true})
     const PR = core.getInput('PR', {required: true})
 
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
@@ -33,7 +31,6 @@ async function run(): Promise<void> {
     const remote = 'origin'
     const branch = pull.data.head.ref
 
-    await exec.exec('cd', [join(GH_WORKSPACE, repoPath)])
     await exec.exec('git', ['fetch', remote, `${branch}:${branch}`])
     await exec.exec('git', ['config', `branch.${branch}.remote`, remote])
     await exec.exec('git', [
@@ -44,7 +41,7 @@ async function run(): Promise<void> {
     await exec.exec('git', ['checkout', branch])
 
     await exec.getExecOutput('cat', [
-      join(GH_WORKSPACE, repoPath, 'packages', 'neofetch', '7.1.0', 'package')
+      join(GH_WORKSPACE, 'packages', 'packages', 'neofetch', '7.1.0', 'package')
     ])
 
     // for (const p of modifiedPaths) {

@@ -32,8 +32,7 @@ jobs:
       - name: "checkout repository"
         uses: actions/checkout@v2
         with:
-          path: "core"
-          fetch-depth: 2
+          # fetch-depth: 2
 
       - name: "setup pakket-builder"
         uses: pakket-project/actions/setup-builder@main
@@ -47,9 +46,9 @@ jobs:
       - name: "run pakket-builder"
         uses: pakket-project/test/build@main
         with:
-          repoPath: "core"
           PR: "${{ github.event.inputs.PR }}"
           GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
           # modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
     # // /runner/core/packages
     # const packagesPath = core.getInput('repoPath')
