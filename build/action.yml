@@ -2,8 +2,8 @@ name: 'Build package'
 description: 'Build a package with pakket-builder'
 author: 'pakket-project'
 inputs:
-  packagesPath:
-    description: 'Path to packages'
+  repoPath:
+    description: 'Path to repository'
     required: true
   PR:
     description: 'PR number'
@@ -11,11 +11,11 @@ inputs:
   GH_TOKEN:
     required: true
 
-outputs:
-  intelChecksums: # id of the output
-    description: 'Intel checksums'
-  siliconChecksums: # id of the output
-    description: 'Silicon checksums'
+# outputs:
+#   intelChecksums: # id of the output
+#     description: 'Intel checksums'
+#   siliconChecksums: # id of the output
+#     description: 'Silicon checksums'
 
 runs:
   using: 'node12'

@@ -7,12 +7,10 @@ import {join} from 'path'
 async function run(): Promise<void> {
   try {
     // /runner/core/packages
-    const packagesPath = core.getInput('packagesPath', {required: true})
+    const repoPath = core.getInput('repoPath', {required: true})
     const PR = core.getInput('PR', {required: true})
 
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
-    const intelChecksums: string[] = []
-    const siliconChecksums: string[] = []
 
     let arch = ''
 
@@ -26,16 +24,28 @@ async function run(): Promise<void> {
 
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 
-    const {data: pullRequest} = await octokit.rest.pulls.get({
+    const pull = await octokit.rest.pulls.get({
       owner: 'pakket-project',
       repo: 'test',
-      pull_number: (PR as unknown) as number,
-      mediaType: {
-        format: 'diff'
-      }
+      pull_number: (PR as unknown) as number
     })
 
-    core.info(JSON.stringify(pullRequest, null, ' '))
+    const remote = 'origin'
+    const branch = pull.data.head.ref
+
+    await exec.exec('cd', [join(GH_WORKSPACE, repoPath)])
+    await exec.exec('git', ['fetch', remote, `${branch}:${branch}`])
+    await exec.exec('git', ['config', `branch.${branch}.remote`, remote])
+    await exec.exec('git', [
+      'config',
+      `branch.${branch}.merge`,
+      `refs/heads/${branch}`
+    ])
+    await exec.exec('git', ['checkout', branch])
+
+    await exec.getExecOutput('cat', [
+      join(GH_WORKSPACE, repoPath, 'packages', 'neofetch', '7.1.0', 'package')
+    ])
 
     // for (const p of modifiedPaths) {
     //   const pathRegex = new RegExp(
@@ -69,9 +79,6 @@ async function run(): Promise<void> {
     //     }
     //   }
     // }
-
-    core.setOutput('intelChecksums', intelChecksums)
-    core.setOutput('siliconChecksums', siliconChecksums)
   } catch (error: any) {
     core.setFailed(error.message)
   }
