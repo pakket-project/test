@@ -8,6 +8,9 @@ inputs:
   PR:
     description: 'PR number'
     required: true
+  GH_TOKEN:
+    required: true
+
 outputs:
   intelChecksums: # id of the output
     description: 'Intel checksums'

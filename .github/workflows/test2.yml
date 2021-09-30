@@ -49,6 +49,7 @@ jobs:
         with:
           packagesPath: "core/packages"
           PR: "${{ github.event.inputs.PR }}"
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           # modifiedPaths: "${{ steps.changed-files.outputs.all_modified_files }}"
     # // /runner/core/packages
     # const packagesPath = core.getInput('repoPath')

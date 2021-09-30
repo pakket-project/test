@@ -24,9 +24,7 @@ async function run(): Promise<void> {
       core.setFailed('unsupported architecture')
     }
 
-    const myToken = core.getInput('myToken')
-
-    const octokit = github.getOctokit(myToken)
+    const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 
     // You can also pass in additional options as a second parameter to getOctokit
     // const octokit = github.getOctokit(myToken, {userAgent: "MyActionVersion1"});
