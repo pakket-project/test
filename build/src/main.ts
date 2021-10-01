@@ -43,12 +43,10 @@ async function run(): Promise<void> {
 
     let arch = ''
 
-    if (process.arch === 'x64') {
+    if (!silicon) {
       arch = 'intel'
-    } else if (process.arch === 'arm64') {
-      arch = 'silicon'
     } else {
-      core.setFailed('unsupported architecture')
+      arch = 'silicon'
     }
 
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
