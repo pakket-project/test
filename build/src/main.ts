@@ -26,7 +26,7 @@ async function exec(
 ): Promise<actionExec.ExecOutput> {
   if (silicon) {
     command = 'arch'
-    args = ['-arch', 'arm64e', command, ...args]
+    args = ['-arm64e', command, ...args]
   }
 
   return await actionExec.getExecOutput(command, args)

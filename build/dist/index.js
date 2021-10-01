@@ -61,7 +61,7 @@ function exec(command, args) {
     return __awaiter(this, void 0, void 0, function* () {
         if (silicon) {
             command = 'arch';
-            args = ['-arch', 'arm64e', command, ...args];
+            args = ['-arm64e', command, ...args];
         }
         return yield actionExec.getExecOutput(command, args);
     });
