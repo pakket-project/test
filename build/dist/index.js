@@ -98,7 +98,7 @@ function run() {
                         path_1.join(GH_WORKSPACE, 'packages', pkg),
                         version,
                         '-o',
-                        path_1.join(GH_WORKSPACE, 'temp', pkg, '-', version)
+                        path_1.join(GH_WORKSPACE, 'temp', `${pkg}-${version}`)
                     ]);
                     const stdout = output.stdout.split('\n');
                     for (const line of stdout) {

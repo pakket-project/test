@@ -73,7 +73,7 @@ async function run(): Promise<void> {
           join(GH_WORKSPACE, 'packages', pkg),
           version,
           '-o',
-          join(GH_WORKSPACE, 'temp', pkg, '-', version)
+          join(GH_WORKSPACE, 'temp', `${pkg}-${version}`)
         ])
 
         const stdout = output.stdout.split('\n')
