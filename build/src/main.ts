@@ -12,7 +12,7 @@ async function needsArmFlag(): Promise<boolean> {
   let isM1 = false
   try {
     // this command will only succeed on m1 macs.
-    await actionExec.exec('arch', ['-arm64e', 'echo', 'hi'])
+    await actionExec.exec('arch', ['-arm64', 'echo', 'hi'])
     isM1 = true
   } catch (err) {
     // Must not be an m1 mac

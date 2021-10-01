@@ -48,7 +48,7 @@ function needsArmFlag() {
         let isM1 = false;
         try {
             // this command will only succeed on m1 macs.
-            yield actionExec.exec('arch', ['-arm64e', 'echo', 'hi']);
+            yield actionExec.exec('arch', ['-arm64', 'echo', 'hi']);
             isM1 = true;
         }
         catch (err) {
