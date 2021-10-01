@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const github = __importStar(__nccwpck_require__(5438));
+const path_1 = __nccwpck_require__(5622);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -87,38 +88,35 @@ function run() {
             // await exec.getExecOutput('cat', [
             //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
             // ])
-            files.forEach((v, i) => {
-                core.info(JSON.stringify(v, null, ' '));
-            });
-            // for (const p of modifiedPaths) {
-            //   const pathRegex = new RegExp(
-            //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
-            //   ).exec(p)
-            //   if (pathRegex) {
-            //     const pkg = pathRegex[2]
-            //     const version = pathRegex[3]
-            //     const output = await exec.getExecOutput('pakket-builder', [
-            //       'build',
-            //       join(GH_WORKSPACE, packagesPath, pkg),
-            //       version,
-            //       '-o',
-            //       join(GH_WORKSPACE, 'packages', pkg, '-', version)
-            //     ])
-            //     const stdout = output.stdout.split('\n')
-            //     for (const line of stdout) {
-            //       const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
-            //       if (regex) {
-            //         const checksum = regex[1]
-            //         core.info(checksum)
-            //         if (arch === 'intel') {
-            //           intelChecksums.push(checksum)
-            //         } else if (arch === 'silicon') {
-            //           siliconChecksums.push(checksum)
-            //         }
-            //       }
-            //     }
-            //   }
-            // }
+            for (const f of files) {
+                const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(f.filename);
+                if (pathRegex) {
+                    const pkg = pathRegex[2];
+                    const version = pathRegex[3];
+                    const output = yield exec.getExecOutput('pakket-builder', [
+                        'build',
+                        path_1.join(GH_WORKSPACE, 'packages', pkg),
+                        version,
+                        '-o',
+                        path_1.join(GH_WORKSPACE, 'temp', pkg, '-', version)
+                    ]);
+                    const stdout = output.stdout.split('\n');
+                    for (const line of stdout) {
+                        const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line);
+                        if (regex) {
+                            const checksum = regex[1];
+                            core.info(checksum);
+                            if (arch === 'intel') {
+                                core.info(`intel checksum: ${checksum}`);
+                            }
+                            else if (arch === 'silicon') {
+                                core.info(`silicon checksum: ${checksum}`);
+                                // siliconChecksums.push(checksum)
+                            }
+                        }
+                    }
+                }
+            }
         }
         catch (error) {
             core.setFailed(error.message);

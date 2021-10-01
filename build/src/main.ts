@@ -59,42 +59,39 @@ async function run(): Promise<void> {
     //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
     // ])
 
-    files.forEach((v, i) => {
-      core.info(JSON.stringify(v, null, ' '))
-    })
+    for (const f of files) {
+      const pathRegex = new RegExp(
+        /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
+      ).exec(f.filename)
 
-    // for (const p of modifiedPaths) {
-    //   const pathRegex = new RegExp(
-    //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
-    //   ).exec(p)
+      if (pathRegex) {
+        const pkg = pathRegex[2]
+        const version = pathRegex[3]
 
-    //   if (pathRegex) {
-    //     const pkg = pathRegex[2]
-    //     const version = pathRegex[3]
+        const output = await exec.getExecOutput('pakket-builder', [
+          'build',
+          join(GH_WORKSPACE, 'packages', pkg),
+          version,
+          '-o',
+          join(GH_WORKSPACE, 'temp', pkg, '-', version)
+        ])
 
-    //     const output = await exec.getExecOutput('pakket-builder', [
-    //       'build',
-    //       join(GH_WORKSPACE, packagesPath, pkg),
-    //       version,
-    //       '-o',
-    //       join(GH_WORKSPACE, 'packages', pkg, '-', version)
-    //     ])
-
-    //     const stdout = output.stdout.split('\n')
-    //     for (const line of stdout) {
-    //       const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
-    //       if (regex) {
-    //         const checksum = regex[1]
-    //         core.info(checksum)
-    //         if (arch === 'intel') {
-    //           intelChecksums.push(checksum)
-    //         } else if (arch === 'silicon') {
-    //           siliconChecksums.push(checksum)
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+        const stdout = output.stdout.split('\n')
+        for (const line of stdout) {
+          const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
+          if (regex) {
+            const checksum = regex[1]
+            core.info(checksum)
+            if (arch === 'intel') {
+              core.info(`intel checksum: ${checksum}`)
+            } else if (arch === 'silicon') {
+              core.info(`silicon checksum: ${checksum}`)
+              // siliconChecksums.push(checksum)
+            }
+          }
+        }
+      }
+    }
   } catch (error: any) {
     core.setFailed(error.message)
   }
