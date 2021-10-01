@@ -60,8 +60,8 @@ function needsArmFlag() {
 function exec(command, args) {
     return __awaiter(this, void 0, void 0, function* () {
         if (silicon) {
-            command = 'arch';
             args = ['-arm64e', command, ...args];
+            command = 'arch';
         }
         return yield actionExec.getExecOutput(command, args);
     });
