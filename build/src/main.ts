@@ -82,6 +82,7 @@ async function run(): Promise<void> {
           if (regex) {
             const checksum = regex[1]
             core.info(checksum)
+            core.info(arch)
             if (arch === 'intel') {
               core.info(`intel checksum: ${checksum}`)
             } else if (arch === 'silicon') {
