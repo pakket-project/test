@@ -59,7 +59,9 @@ async function run(): Promise<void> {
     //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
     // ])
 
-    core.info(files.join(', '))
+    files.forEach((v, i) => {
+      core.info(JSON.stringify(v, null, ' '))
+    })
 
     // for (const p of modifiedPaths) {
     //   const pathRegex = new RegExp(
