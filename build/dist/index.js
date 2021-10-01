@@ -44,6 +44,7 @@ function run() {
         try {
             const PR = core.getInput('PR', { required: true });
             const GH_WORKSPACE = process.env.GITHUB_WORKSPACE;
+            const repository = 'test';
             let arch = '';
             if (process.arch === 'x64') {
                 arch = 'intel';
@@ -57,7 +58,7 @@ function run() {
             const octokit = github.getOctokit(core.getInput('GH_TOKEN'));
             const pull = yield octokit.rest.pulls.get({
                 owner: 'pakket-project',
-                repo: 'test',
+                repo: repository,
                 pull_number: PR
             });
             const branch = pull.data.head.ref;
@@ -70,19 +71,23 @@ function run() {
             ]);
             yield exec.exec('git', ['checkout', branch]);
             core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`);
+            // const prFiles = await octokit.request(
+            //   `GET /repos/pakket-project/${repository}/pulls/${PR}/files`,
+            //   {
+            //     owner: 'pakket-project',
+            //     repo: repository,
+            //     pull_number: PR
+            //   }
+            // )
+            const { data: files } = yield octokit.rest.pulls.listFiles({
+                owner: 'pakket-project',
+                pull_number: PR,
+                repo: repository
+            });
             // await exec.getExecOutput('cat', [
             //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
             // ])
-            const files = yield exec.getExecOutput('gh', [
-                'pr',
-                'view',
-                PR,
-                '--json',
-                'files',
-                '--jq',
-                '.files.[].path'
-            ]);
-            core.info(files.stdout);
+            core.info(files.join(', '));
             // for (const p of modifiedPaths) {
             //   const pathRegex = new RegExp(
             //     /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g

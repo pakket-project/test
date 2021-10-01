@@ -9,6 +9,7 @@ async function run(): Promise<void> {
     const PR = core.getInput('PR', {required: true})
 
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
+    const repository = 'test'
 
     let arch = ''
 
@@ -24,7 +25,7 @@ async function run(): Promise<void> {
 
     const pull = await octokit.rest.pulls.get({
       owner: 'pakket-project',
-      repo: 'test',
+      repo: repository,
       pull_number: (PR as unknown) as number
     })
 
@@ -40,21 +41,25 @@ async function run(): Promise<void> {
     await exec.exec('git', ['checkout', branch])
     core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`)
 
+    // const prFiles = await octokit.request(
+    //   `GET /repos/pakket-project/${repository}/pulls/${PR}/files`,
+    //   {
+    //     owner: 'pakket-project',
+    //     repo: repository,
+    //     pull_number: PR
+    //   }
+    // )
+    const {data: files} = await octokit.rest.pulls.listFiles({
+      owner: 'pakket-project',
+      pull_number: (PR as unknown) as number,
+      repo: repository
+    })
+
     // await exec.getExecOutput('cat', [
     //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
     // ])
 
-    const files = await exec.getExecOutput('gh', [
-      'pr',
-      'view',
-      PR,
-      '--json',
-      'files',
-      '--jq',
-      '.files.[].path'
-    ])
-
-    core.info(files.stdout)
+    core.info(files.join(', '))
 
     // for (const p of modifiedPaths) {
     //   const pathRegex = new RegExp(
