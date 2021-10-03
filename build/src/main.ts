@@ -4,6 +4,9 @@ import * as actionExec from '@actions/exec'
 import * as github from '@actions/github'
 import {join} from 'path'
 
+import simpleGit, {SimpleGit} from 'simple-git'
+const git: SimpleGit = simpleGit()
+
 let silicon = false
 
 async function needsArmFlag(): Promise<boolean> {
@@ -104,6 +107,13 @@ async function run(): Promise<void> {
         } else {
           arch = 'intel'
         }
+
+        await git.addConfig('user.email', 'bot@pakket.sh')
+        await git.addConfig('user.name', 'Pakket Bot')
+
+        await git.add('.')
+        await git.commit(`Add checksum for ${pkg} (${version}, ${arch})`)
+        await git.push()
 
         const tarPath = join(outputDir, pkg, `${pkg}-${version}-${arch}.tar.xz`)
         const destDir = join(
