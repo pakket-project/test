@@ -69,32 +69,23 @@ async function run(): Promise<void> {
     await exec('git', ['checkout', branch])
     core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`)
 
-    // const prFiles = await octokit.request(
-    //   `GET /repos/pakket-project/${repository}/pulls/${PR}/files`,
-    //   {
-    //     owner: 'pakket-project',
-    //     repo: repository,
-    //     pull_number: PR
-    //   }
-    // )
     const {data: files} = await octokit.rest.pulls.listFiles({
       owner: 'pakket-project',
       pull_number: (PR as unknown) as number,
       repo: repository
     })
 
-    // await exec.getExecOutput('cat', [
-    //   join(GH_WORKSPACE, 'packages', 'neofetch', '7.1.0', 'package')
-    // ])
+    let pkg = ''
+    let version = ''
 
     for (const f of files) {
       const pathRegex = new RegExp(
         /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
       ).exec(f.filename)
 
-      if (pathRegex) {
-        const pkg = pathRegex[2]
-        const version = pathRegex[3]
+      if (pathRegex && pkg === '' && version === '') {
+        pkg = pathRegex[2]
+        version = pathRegex[3]
 
         const output = await exec('pakket-builder', [
           'build',
@@ -109,8 +100,6 @@ async function run(): Promise<void> {
           const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
           if (regex) {
             const checksum = regex[1]
-            core.info(checksum)
-            core.info(arch)
             if (arch === 'intel') {
               core.info(`intel checksum: ${checksum}`)
             } else if (arch === 'silicon') {
