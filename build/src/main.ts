@@ -42,7 +42,7 @@ async function run(): Promise<void> {
     const PR = core.getInput('PR', {required: true})
 
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
-    const repository = 'test'
+    const repository = 'core'
 
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 

@@ -77,7 +77,7 @@ function run() {
         try {
             const PR = core.getInput('PR', { required: true });
             const GH_WORKSPACE = process.env.GITHUB_WORKSPACE;
-            const repository = 'test';
+            const repository = 'core';
             const octokit = github.getOctokit(core.getInput('GH_TOKEN'));
             const pull = yield octokit.rest.pulls.get({
                 owner: 'pakket-project',
