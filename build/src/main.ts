@@ -41,13 +41,13 @@ async function run(): Promise<void> {
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
     const repository = 'test'
 
-    let arch = ''
+    // let arch = ''
 
-    if (!silicon) {
-      arch = 'intel'
-    } else {
-      arch = 'silicon'
-    }
+    // if (!silicon) {
+    //   arch = 'intel'
+    // } else {
+    //   arch = 'silicon'
+    // }
 
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 
@@ -77,6 +77,7 @@ async function run(): Promise<void> {
 
     let pkg = ''
     let version = ''
+    // let checksum = ''
 
     for (const f of files) {
       const pathRegex = new RegExp(
@@ -87,7 +88,7 @@ async function run(): Promise<void> {
         pkg = pathRegex[2]
         version = pathRegex[3]
 
-        const output = await exec('pakket-builder', [
+        await exec('pakket-builder', [
           'build',
           join(GH_WORKSPACE, 'packages', pkg),
           version,
@@ -95,19 +96,13 @@ async function run(): Promise<void> {
           join(GH_WORKSPACE, 'temp', `${pkg}-${version}`)
         ])
 
-        const stdout = output.stdout.split('\n')
-        for (const line of stdout) {
-          const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
-          if (regex) {
-            const checksum = regex[1]
-            if (arch === 'intel') {
-              core.info(`intel checksum: ${checksum}`)
-            } else if (arch === 'silicon') {
-              core.info(`silicon checksum: ${checksum}`)
-              // siliconChecksums.push(checksum)
-            }
-          }
-        }
+        // const stdout = output.stdout.split('\n')
+        // for (const line of stdout) {
+        //   const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
+        //   if (regex) {
+        //     checksum = regex[1]
+        //   }
+        // }
       }
     }
   } catch (error: any) {
