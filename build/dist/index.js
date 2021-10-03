@@ -108,20 +108,30 @@ function run() {
                 if (pathRegex && pkg === '' && version === '') {
                     pkg = pathRegex[2];
                     version = pathRegex[3];
+                    const outputDir = path_1.join(GH_WORKSPACE, 'temp', `${pkg}-${version}`);
                     yield exec('pakket-builder', [
                         'build',
                         path_1.join(GH_WORKSPACE, 'packages', pkg),
                         version,
                         '-o',
-                        path_1.join(GH_WORKSPACE, 'temp', `${pkg}-${version}`)
+                        outputDir
                     ]);
-                    // const stdout = output.stdout.split('\n')
-                    // for (const line of stdout) {
-                    //   const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
-                    //   if (regex) {
-                    //     checksum = regex[1]
-                    //   }
-                    // }
+                    let arch = '';
+                    if (silicon) {
+                        arch = 'silicon';
+                    }
+                    else {
+                        arch = 'intel';
+                    }
+                    const tarPath = path_1.join(outputDir, pkg, `${pkg}-${version}-${arch}.tar.xz`);
+                    const destDir = path_1.join('containers', 'caddy', 'core-packages', pkg, version);
+                    try {
+                        yield exec('ssh', ['mirror', 'mkdir', '-p', destDir]);
+                        yield exec('scp', [tarPath, `mirror:${destDir}`]);
+                    }
+                    catch (err) {
+                        core.setFailed('failed to upload the package to the mirror');
+                    }
                 }
             }
         }

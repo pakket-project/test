@@ -88,21 +88,38 @@ async function run(): Promise<void> {
         pkg = pathRegex[2]
         version = pathRegex[3]
 
+        const outputDir = join(GH_WORKSPACE, 'temp', `${pkg}-${version}`)
+
         await exec('pakket-builder', [
           'build',
           join(GH_WORKSPACE, 'packages', pkg),
           version,
           '-o',
-          join(GH_WORKSPACE, 'temp', `${pkg}-${version}`)
+          outputDir
         ])
 
-        // const stdout = output.stdout.split('\n')
-        // for (const line of stdout) {
-        //   const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
-        //   if (regex) {
-        //     checksum = regex[1]
-        //   }
-        // }
+        let arch = ''
+        if (silicon) {
+          arch = 'silicon'
+        } else {
+          arch = 'intel'
+        }
+
+        const tarPath = join(outputDir, pkg, `${pkg}-${version}-${arch}.tar.xz`)
+        const destDir = join(
+          'containers',
+          'caddy',
+          'core-packages',
+          pkg,
+          version
+        )
+
+        try {
+          await exec('ssh', ['mirror', 'mkdir', '-p', destDir])
+          await exec('scp', [tarPath, `mirror:${destDir}`])
+        } catch (err) {
+          core.setFailed('failed to upload the package to the mirror')
+        }
       }
     }
   } catch (error: any) {
