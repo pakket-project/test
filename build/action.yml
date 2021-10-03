@@ -8,12 +8,6 @@ inputs:
   GH_TOKEN:
     required: true
 
-# outputs:
-#   intelChecksums: # id of the output
-#     description: 'Intel checksums'
-#   siliconChecksums: # id of the output
-#     description: 'Silicon checksums'
-
 runs:
   using: 'node12'
   main: 'dist/index.js'
