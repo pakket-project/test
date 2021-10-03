@@ -44,14 +44,6 @@ async function run(): Promise<void> {
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
     const repository = 'test'
 
-    // let arch = ''
-
-    // if (!silicon) {
-    //   arch = 'intel'
-    // } else {
-    //   arch = 'silicon'
-    // }
-
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 
     const pull = await octokit.rest.pulls.get({
@@ -114,6 +106,7 @@ async function run(): Promise<void> {
         await git.add('.')
         await git.commit(`Add checksum for ${pkg} (${version}, ${arch})`)
         await git.push()
+        core.info('Pushed checksum to repository')
 
         const tarPath = join(outputDir, pkg, `${pkg}-${version}-${arch}.tar.xz`)
         const destDir = join(
@@ -127,8 +120,9 @@ async function run(): Promise<void> {
         try {
           await exec('ssh', ['mirror', 'mkdir', '-p', destDir])
           await exec('scp', [tarPath, `mirror:${destDir}`])
+          core.info('Uploaded package to mirror')
         } catch (err) {
-          core.setFailed('failed to upload the package to the mirror')
+          core.setFailed('Failed to upload the package to the mirror')
         }
       }
     }

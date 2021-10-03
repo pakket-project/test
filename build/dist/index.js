@@ -78,12 +78,6 @@ function run() {
             const PR = core.getInput('PR', { required: true });
             const GH_WORKSPACE = process.env.GITHUB_WORKSPACE;
             const repository = 'test';
-            // let arch = ''
-            // if (!silicon) {
-            //   arch = 'intel'
-            // } else {
-            //   arch = 'silicon'
-            // }
             const octokit = github.getOctokit(core.getInput('GH_TOKEN'));
             const pull = yield octokit.rest.pulls.get({
                 owner: 'pakket-project',
@@ -133,14 +127,16 @@ function run() {
                     yield git.add('.');
                     yield git.commit(`Add checksum for ${pkg} (${version}, ${arch})`);
                     yield git.push();
+                    core.info('Pushed checksum to repository');
                     const tarPath = path_1.join(outputDir, pkg, `${pkg}-${version}-${arch}.tar.xz`);
                     const destDir = path_1.join('containers', 'caddy', 'core-packages', pkg, version);
                     try {
                         yield exec('ssh', ['mirror', 'mkdir', '-p', destDir]);
                         yield exec('scp', [tarPath, `mirror:${destDir}`]);
+                        core.info('Uploaded package to mirror');
                     }
                     catch (err) {
-                        core.setFailed('failed to upload the package to the mirror');
+                        core.setFailed('Failed to upload the package to the mirror');
                     }
                 }
             }
