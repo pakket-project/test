@@ -14,3 +14,15 @@ jobs:
           echo "test"
           echo "$PATH"
           sphinx-build
+
+  test2:
+    runs-on: [self-hosted, silicon]
+    steps:
+      - name: "test"
+        run: "echo hi"
+
+      - name: "test2"
+        run: |
+          echo "test"
+          echo "$PATH"
+          sphinx-build
