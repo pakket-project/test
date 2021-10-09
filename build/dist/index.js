@@ -177,20 +177,24 @@ function run() {
                         core.info('Pushed checksum to repository');
                     }
                     catch (err) {
+                        if (PR) {
+                            yield octokit.rest.issues.createComment({
+                                body: `Uploading ${arch} checksum failed.\nChecksum: ${checksum}`,
+                                issue_number: PR,
+                                owner: 'pakket-project',
+                                repo: 'core'
+                            });
+                        }
+                        core.setFailed('Failed to push checksum to repository');
+                    }
+                    if (PR) {
                         yield octokit.rest.issues.createComment({
-                            body: `Uploading ${arch} checksum failed.\nChecksum: ${checksum}`,
+                            body: `Successfully packaged and uploaded ${pkg} (for ${arch}) to the mirror.`,
                             issue_number: PR,
                             owner: 'pakket-project',
                             repo: 'core'
                         });
-                        core.setFailed('Failed to push checksum to repository');
                     }
-                    yield octokit.rest.issues.createComment({
-                        body: `Successfully packaged and uploaded ${pkg} (for ${arch}) to the mirror.`,
-                        issue_number: PR,
-                        owner: 'pakket-project',
-                        repo: 'core'
-                    });
                 }
             }
         }
