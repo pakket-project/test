@@ -39,10 +39,19 @@ async function run(): Promise<void> {
   silicon = await needsArmFlag()
 
   try {
-    const PR = core.getInput('PR', {required: true})
+    const PR = core.getInput('PR', {required: false})
 
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
     const repository = 'core'
+
+    let pkgName = ''
+    let pkgVersion = ''
+    if (!PR) {
+      pkgName = core.getInput('package', {required: false})
+      pkgVersion = core.getInput('version', {required: false})
+    }
+
+    process.env.HOME = GH_WORKSPACE
 
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 
@@ -53,31 +62,48 @@ async function run(): Promise<void> {
     })
 
     const branch = pull.data.head.ref
+    const fork = pull.data.head.repo?.fork
 
-    await exec('git', ['fetch', 'origin', `${branch}:${branch}`])
-    await exec('git', ['config', `branch.${branch}.remote`, 'origin'])
-    await exec('git', [
-      'config',
-      `branch.${branch}.merge`,
-      `refs/heads/${branch}`
-    ])
-    await exec('git', ['checkout', branch])
-    core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`)
+    const files = []
 
-    const {data: files} = await octokit.rest.pulls.listFiles({
-      owner: 'pakket-project',
-      pull_number: (PR as unknown) as number,
-      repo: repository
-    })
+    if (PR) {
+      if (fork === true) {
+        await git.remote([
+          'add',
+          'fork',
+          pull.data.head.repo?.clone_url as string
+        ])
+        await git.fetch('fork')
+        await git.checkout(`fork/${branch}`, ['--track'])
+      } else {
+        await git.fetch('origin', `${branch}:${branch}`)
+        await git.addConfig(`branch.${branch}.remote`, 'origin')
+        await git.addConfig(`branch.${branch}.merge`, `refs/heads/${branch}`)
+        await git.checkout(branch)
+      }
+
+      core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`)
+
+      const pullFiles = await octokit.rest.pulls.listFiles({
+        owner: 'pakket-project',
+        pull_number: (PR as unknown) as number,
+        repo: repository
+      })
+
+      for (const file of pullFiles.data) {
+        files.push(file.filename)
+      }
+    } else {
+      files.push(join('packages', pkgName, pkgVersion, 'package'))
+    }
 
     let pkg = ''
     let version = ''
-    // let checksum = ''
 
     for (const f of files) {
       const pathRegex = new RegExp(
         /(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g
-      ).exec(f.filename)
+      ).exec(f)
 
       if (pathRegex && pkg === '' && version === '') {
         pkg = pathRegex[2]
@@ -85,7 +111,8 @@ async function run(): Promise<void> {
 
         const outputDir = join(GH_WORKSPACE, 'temp', `${pkg}-${version}`)
 
-        await exec('pakket-builder', [
+        const buildOutput = await exec('sudo', [
+          'pakket-builder',
           'build',
           join(GH_WORKSPACE, 'packages', pkg),
           version,
@@ -93,20 +120,21 @@ async function run(): Promise<void> {
           outputDir
         ])
 
+        let checksum = ''
+        const stdout = buildOutput.stdout.split('\n')
+        for (const line of stdout) {
+          const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line)
+          if (regex) {
+            checksum = regex[1]
+          }
+        }
+
         let arch = ''
         if (silicon) {
           arch = 'silicon'
         } else {
           arch = 'intel'
         }
-
-        await git.addConfig('user.email', 'bot@pakket.sh')
-        await git.addConfig('user.name', 'Pakket Bot')
-
-        await git.add('.')
-        await git.commit(`Add checksum for ${pkg} (${version}, ${arch})`)
-        await git.push()
-        core.info('Pushed checksum to repository')
 
         const tarPath = join(outputDir, pkg, `${pkg}-${version}-${arch}.tar.xz`)
         const destDir = join(
@@ -124,6 +152,33 @@ async function run(): Promise<void> {
         } catch (err) {
           core.setFailed('Failed to upload the package to the mirror')
         }
+
+        try {
+          await git.addConfig('user.email', 'bot@pakket.sh')
+          await git.addConfig('user.name', 'Pakket Bot')
+          await git.addConfig('pull.rebase', 'true')
+
+          await git.add('./packages')
+          await git.commit(`Add checksum for ${pkg} (${version}, ${arch})`)
+          await git.pull()
+          await git.push()
+          core.info('Pushed checksum to repository')
+        } catch (err) {
+          await octokit.rest.issues.createComment({
+            body: `Uploading ${arch} checksum failed.\nChecksum: ${checksum}`,
+            issue_number: (PR as unknown) as number,
+            owner: 'pakket-project',
+            repo: 'core'
+          })
+          core.setFailed('Failed to push checksum to repository')
+        }
+
+        await octokit.rest.issues.createComment({
+          body: `Successfully packaged and uploaded ${pkg} (for ${arch}) to the mirror.`,
+          issue_number: (PR as unknown) as number,
+          owner: 'pakket-project',
+          repo: 'core'
+        })
       }
     }
   } catch (error: any) {

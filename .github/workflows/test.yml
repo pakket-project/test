@@ -1,28 +1,59 @@
-name: yeet
+name: "Build and push packages to mirror"
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      PR:
+        description: "PR number"
+        required: false
+      package:
+        description: "Package name (if not PR)"
+        required: false
+      version:
+        description: "Package version (if not PR)"
+        required: false
 
 jobs:
-  test:
-    runs-on: [self-hosted, intel]
+  builder:
+    runs-on: "${{matrix.os}}"
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+          - os: ["self-hosted", "silicon"]
+            shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
+            arch: "silicon"
+          - os: ["self-hosted", "intel"]
+            shell: "bash"
+            arch: "intel"
+
+    defaults:
+      run:
+        shell: "${{matrix.shell}}"
+
     steps:
-      - name: "test"
-        run: "echo hi"
+      - name: "check arch"
+        run: "arch"
 
-      - name: "test2"
-        run: |
-          echo "test"
-          echo "$PATH"
-          sphinx-build
+      - name: "clean working directory"
+        run: sudo rm -rf ${{ github.workspace }}/* ${{ github.workspace }}/.* || true
 
-  test2:
-    runs-on: [self-hosted, silicon]
-    steps:
-      - name: "test"
-        run: "echo hi"
+      - name: "checkout repository"
+        uses: actions/checkout@v2
 
-      - name: "test2"
-        run: |
-          echo "test"
-          echo "$PATH"
-          sphinx-build
+      - name: "setup pakket-builder"
+        uses: pakket-project/actions/setup-builder@main
+        with:
+          version: "0.0.2"
+
+      - name: "run pakket-builder"
+        uses: pakket-project/actions/build@main
+        with:
+          PR: "${{ github.event.inputs.PR }}"
+          package: "${{ github.event.inputs.package }}"
+          version: "${{ github.event.inputs.version }}"
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: "clean working directory"
+        run: sudo rm -rf ${{ github.workspace }}/* ${{ github.workspace }}/.* || true
