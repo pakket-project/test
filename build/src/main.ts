@@ -55,18 +55,20 @@ async function run(): Promise<void> {
 
     const octokit = github.getOctokit(core.getInput('GH_TOKEN'))
 
-    const pull = await octokit.rest.pulls.get({
-      owner: 'pakket-project',
-      repo: repository,
-      pull_number: (PR as unknown) as number
-    })
-
-    const branch = pull.data.head.ref
-    const fork = pull.data.head.repo?.fork
+    let pull
 
     const files = []
 
     if (PR) {
+      pull = await octokit.rest.pulls.get({
+        owner: 'pakket-project',
+        repo: repository,
+        pull_number: (PR as unknown) as number
+      })
+
+      const branch = pull.data.head.ref
+      const fork = pull.data.head.repo?.fork
+
       if (fork === true) {
         await git.remote([
           'add',

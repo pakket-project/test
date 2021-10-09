@@ -72,49 +72,83 @@ function exec(command, args) {
     });
 }
 function run() {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         silicon = yield needsArmFlag();
         try {
-            const PR = core.getInput('PR', { required: true });
+            const PR = core.getInput('PR', { required: false });
             const GH_WORKSPACE = process.env.GITHUB_WORKSPACE;
             const repository = 'core';
+            let pkgName = '';
+            let pkgVersion = '';
+            if (!PR) {
+                pkgName = core.getInput('package', { required: false });
+                pkgVersion = core.getInput('version', { required: false });
+            }
+            process.env.HOME = GH_WORKSPACE;
             const octokit = github.getOctokit(core.getInput('GH_TOKEN'));
-            const pull = yield octokit.rest.pulls.get({
-                owner: 'pakket-project',
-                repo: repository,
-                pull_number: PR
-            });
-            const branch = pull.data.head.ref;
-            yield exec('git', ['fetch', 'origin', `${branch}:${branch}`]);
-            yield exec('git', ['config', `branch.${branch}.remote`, 'origin']);
-            yield exec('git', [
-                'config',
-                `branch.${branch}.merge`,
-                `refs/heads/${branch}`
-            ]);
-            yield exec('git', ['checkout', branch]);
-            core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`);
-            const { data: files } = yield octokit.rest.pulls.listFiles({
-                owner: 'pakket-project',
-                pull_number: PR,
-                repo: repository
-            });
+            let pull;
+            const files = [];
+            if (PR) {
+                pull = yield octokit.rest.pulls.get({
+                    owner: 'pakket-project',
+                    repo: repository,
+                    pull_number: PR
+                });
+                const branch = pull.data.head.ref;
+                const fork = (_a = pull.data.head.repo) === null || _a === void 0 ? void 0 : _a.fork;
+                if (fork === true) {
+                    yield git.remote([
+                        'add',
+                        'fork',
+                        (_b = pull.data.head.repo) === null || _b === void 0 ? void 0 : _b.clone_url
+                    ]);
+                    yield git.fetch('fork');
+                    yield git.checkout(`fork/${branch}`, ['--track']);
+                }
+                else {
+                    yield git.fetch('origin', `${branch}:${branch}`);
+                    yield git.addConfig(`branch.${branch}.remote`, 'origin');
+                    yield git.addConfig(`branch.${branch}.merge`, `refs/heads/${branch}`);
+                    yield git.checkout(branch);
+                }
+                core.info(`Checked out ${pull.data.head.ref} (PR #${PR})`);
+                const pullFiles = yield octokit.rest.pulls.listFiles({
+                    owner: 'pakket-project',
+                    pull_number: PR,
+                    repo: repository
+                });
+                for (const file of pullFiles.data) {
+                    files.push(file.filename);
+                }
+            }
+            else {
+                files.push(path_1.join('packages', pkgName, pkgVersion, 'package'));
+            }
             let pkg = '';
             let version = '';
-            // let checksum = ''
             for (const f of files) {
-                const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(f.filename);
+                const pathRegex = new RegExp(/(packages\/)([^/]*)\/([^/]*)\/([^\n]*)/g).exec(f);
                 if (pathRegex && pkg === '' && version === '') {
                     pkg = pathRegex[2];
                     version = pathRegex[3];
                     const outputDir = path_1.join(GH_WORKSPACE, 'temp', `${pkg}-${version}`);
-                    yield exec('pakket-builder', [
+                    const buildOutput = yield exec('sudo', [
+                        'pakket-builder',
                         'build',
                         path_1.join(GH_WORKSPACE, 'packages', pkg),
                         version,
                         '-o',
                         outputDir
                     ]);
+                    let checksum = '';
+                    const stdout = buildOutput.stdout.split('\n');
+                    for (const line of stdout) {
+                        const regex = new RegExp(/checksum: ([A-Fa-f0-9]{64})/g).exec(line);
+                        if (regex) {
+                            checksum = regex[1];
+                        }
+                    }
                     let arch = '';
                     if (silicon) {
                         arch = 'silicon';
@@ -122,12 +156,6 @@ function run() {
                     else {
                         arch = 'intel';
                     }
-                    yield git.addConfig('user.email', 'bot@pakket.sh');
-                    yield git.addConfig('user.name', 'Pakket Bot');
-                    yield git.add('.');
-                    yield git.commit(`Add checksum for ${pkg} (${version}, ${arch})`);
-                    yield git.push();
-                    core.info('Pushed checksum to repository');
                     const tarPath = path_1.join(outputDir, pkg, `${pkg}-${version}-${arch}.tar.xz`);
                     const destDir = path_1.join('containers', 'caddy', 'core-packages', pkg, version);
                     try {
@@ -138,6 +166,31 @@ function run() {
                     catch (err) {
                         core.setFailed('Failed to upload the package to the mirror');
                     }
+                    try {
+                        yield git.addConfig('user.email', 'bot@pakket.sh');
+                        yield git.addConfig('user.name', 'Pakket Bot');
+                        yield git.addConfig('pull.rebase', 'true');
+                        yield git.add('./packages');
+                        yield git.commit(`Add checksum for ${pkg} (${version}, ${arch})`);
+                        yield git.pull();
+                        yield git.push();
+                        core.info('Pushed checksum to repository');
+                    }
+                    catch (err) {
+                        yield octokit.rest.issues.createComment({
+                            body: `Uploading ${arch} checksum failed.\nChecksum: ${checksum}`,
+                            issue_number: PR,
+                            owner: 'pakket-project',
+                            repo: 'core'
+                        });
+                        core.setFailed('Failed to push checksum to repository');
+                    }
+                    yield octokit.rest.issues.createComment({
+                        body: `Successfully packaged and uploaded ${pkg} (for ${arch}) to the mirror.`,
+                        issue_number: PR,
+                        owner: 'pakket-project',
+                        repo: 'core'
+                    });
                 }
             }
         }
