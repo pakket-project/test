@@ -95,6 +95,7 @@ function run() {
                     repo: repository,
                     pull_number: PR
                 });
+                core.info(`PR ${PR} ${pull.data.title}`);
                 const branch = pull.data.head.ref;
                 const fork = (_a = pull.data.head.repo) === null || _a === void 0 ? void 0 : _a.fork;
                 if (fork === true) {
