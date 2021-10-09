@@ -188,6 +188,7 @@ async function run(): Promise<void> {
       }
     }
   } catch (error: any) {
+    core.info(error)
     core.setFailed(error.message)
   }
 }

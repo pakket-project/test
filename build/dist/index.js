@@ -199,6 +199,7 @@ function run() {
             }
         }
         catch (error) {
+            core.info(error);
             core.setFailed(error.message);
         }
     });
