@@ -48,7 +48,7 @@ jobs:
           version: "0.0.2"
 
       - name: "run pakket-builder"
-        uses: pakket-project/actions/build@main
+        uses: pakket-project/test/build@main
         with:
           PR: "${{ github.event.inputs.PR }}"
           package: "${{ github.event.inputs.package }}"
