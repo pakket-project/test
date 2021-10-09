@@ -78,7 +78,7 @@ function run() {
         try {
             const PR = core.getInput('PR', { required: false });
             const GH_WORKSPACE = process.env.GITHUB_WORKSPACE;
-            const repository = 'core';
+            const repository = 'test';
             let pkgName = '';
             let pkgVersion = '';
             if (!PR) {
@@ -95,7 +95,6 @@ function run() {
                     repo: repository,
                     pull_number: PR
                 });
-                core.info(`PR ${PR} ${pull.data.title}`);
                 const branch = pull.data.head.ref;
                 const fork = (_a = pull.data.head.repo) === null || _a === void 0 ? void 0 : _a.fork;
                 if (fork === true) {

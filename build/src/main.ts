@@ -42,7 +42,7 @@ async function run(): Promise<void> {
     const PR = core.getInput('PR', {required: false})
 
     const GH_WORKSPACE = process.env.GITHUB_WORKSPACE as string
-    const repository = 'core'
+    const repository = 'test'
 
     let pkgName = ''
     let pkgVersion = ''
@@ -65,7 +65,7 @@ async function run(): Promise<void> {
         repo: repository,
         pull_number: (PR as unknown) as number
       })
-core.info(`PR ${PR} ${pull.data.title}`)
+
       const branch = pull.data.head.ref
       const fork = pull.data.head.repo?.fork
 
