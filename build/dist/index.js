@@ -103,7 +103,7 @@ function run() {
                         'fork',
                         (_b = pull.data.head.repo) === null || _b === void 0 ? void 0 : _b.clone_url
                     ]);
-                    yield git.fetch('fork');
+                    yield git.fetch('fork', ["--all"]);
                     yield git.checkout(`fork/${branch}`, ['--track']);
                 }
                 else {
@@ -199,7 +199,6 @@ function run() {
             }
         }
         catch (error) {
-            core.info(error);
             core.setFailed(error.message);
         }
     });

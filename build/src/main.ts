@@ -75,7 +75,7 @@ async function run(): Promise<void> {
           'fork',
           pull.data.head.repo?.clone_url as string
         ])
-        await git.fetch('fork')
+        await git.fetch('fork',["--all"])
         await git.checkout(`fork/${branch}`, ['--track'])
       } else {
         await git.fetch('origin', `${branch}:${branch}`)
@@ -188,7 +188,6 @@ async function run(): Promise<void> {
       }
     }
   } catch (error: any) {
-    core.info(error)
     core.setFailed(error.message)
   }
 }
